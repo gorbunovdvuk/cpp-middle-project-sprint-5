@@ -17,9 +17,7 @@ struct Point2D {
     constexpr Point2D() : x(0), y(0) {}
     constexpr Point2D(double x, double y) : x(x), y(y) {}
 
-    bool operator==(const Point2D &other) const {
-        return x == other.x && y == other.y;
-    }
+    bool operator==(const Point2D &other) const { return x == other.x && y == other.y; }
 
     // Binary math operators
     Point2D operator+(const Point2D &other) const { return {x + other.x, y + other.y}; }
@@ -39,39 +37,30 @@ struct Point2D {
         return len > 0 ? Point2D{x / len, y / len} : Point2D{0, 0};
     }
 
-    Point2D Norm() const {
-        return {-y, x};
-    }
+    Point2D Norm() const { return {-y, x}; }
 
-    bool Equals(const Point2D &other) const {
-        return std::abs(x - other.x) < 1e-10 && std::abs(y - other.y) < 1e-10;
-    }
+    bool Equals(const Point2D &other) const { return std::abs(x - other.x) < 1e-10 && std::abs(y - other.y) < 1e-10; }
 };
 
 struct BoundingBox {
     double min_x, min_y, max_x, max_y;
 
-    constexpr BoundingBox():
-        min_x(std::numeric_limits<double>::infinity()),
-        min_y(std::numeric_limits<double>::infinity()),
-        max_x(-std::numeric_limits<double>::infinity()),
-        max_y(-std::numeric_limits<double>::infinity()) {}
+    constexpr BoundingBox()
+        : min_x(std::numeric_limits<double>::infinity()), min_y(std::numeric_limits<double>::infinity()),
+          max_x(-std::numeric_limits<double>::infinity()), max_y(-std::numeric_limits<double>::infinity()) {}
 
-    constexpr BoundingBox(double x1, double y1, double x2, double y2):
-        min_x(std::min(x1, x2)),
-        min_y(std::min(y1, y2)),
-        max_x(std::max(x1, x2)),
-        max_y(std::max(y1, y2)) {}
+    constexpr BoundingBox(double x1, double y1, double x2, double y2)
+        : min_x(std::min(x1, x2)), min_y(std::min(y1, y2)), max_x(std::max(x1, x2)), max_y(std::max(y1, y2)) {}
 
-    template<std::ranges::range R>
-    constexpr explicit BoundingBox(R&& pts): BoundingBox(
-        std::ranges::min(pts, std::less<>{}, [](const auto& pt) { return pt.x; }).x,
-        std::ranges::min(pts, std::less<>{}, [](const auto& pt) { return pt.y; }).y,
-        std::ranges::max(pts, std::less<>{}, [](const auto& pt) { return pt.x; }).x,
-        std::ranges::max(pts, std::less<>{}, [](const auto& pt) { return pt.y; }).y
-    ) {}
+    template <std::ranges::range R>
+    constexpr explicit BoundingBox(R &&pts)
+        : BoundingBox(std::ranges::min(pts, std::less<>{}, [](const auto &pt) { return pt.x; }).x,
+                      std::ranges::min(pts, std::less<>{}, [](const auto &pt) { return pt.y; }).y,
+                      std::ranges::max(pts, std::less<>{}, [](const auto &pt) { return pt.x; }).x,
+                      std::ranges::max(pts, std::less<>{}, [](const auto &pt) { return pt.y; }).y) {}
 
-    constexpr BoundingBox(std::initializer_list<Point2D> pts): BoundingBox(std::ranges::subrange(pts.begin(), pts.end())) {}
+    constexpr BoundingBox(std::initializer_list<Point2D> pts)
+        : BoundingBox(std::ranges::subrange(pts.begin(), pts.end())) {}
 
     double Width() const { return max_x - min_x; }
     double Height() const { return max_y - min_y; }
@@ -86,45 +75,25 @@ struct BoundingBox {
 struct LineSegment {
     Point2D pt1, pt2;
 
-    bool operator==(const LineSegment &other) const {
-        return pt1 == other.pt1 && pt2 == other.pt2;
-    }
+    bool operator==(const LineSegment &other) const { return pt1 == other.pt1 && pt2 == other.pt2; }
 
-    double Length() const {
-        return pt2.DistanceTo(pt1);
-    }
+    double Length() const { return pt2.DistanceTo(pt1); }
 
-    Point2D Direction() const {
-        return pt2 - pt1;
-    }
+    Point2D Direction() const { return pt2 - pt1; }
 
-    BoundingBox BoundBox() const {
-        return BoundingBox{pt1, pt2};
-    }
+    BoundingBox BoundBox() const { return BoundingBox{pt1, pt2}; }
 
-    double Width() const {
-        return BoundBox().Width();
-    }
+    double Width() const { return BoundBox().Width(); }
 
-    double Height() const {
-        return BoundBox().Height();
-    }
+    double Height() const { return BoundBox().Height(); }
 
-    double UnusualHeight() const {
-        return BoundBox().max_y;
-    }
+    double UnusualHeight() const { return BoundBox().max_y; }
 
-    Point2D Center() const {
-        return BoundBox().Center();
-    }
+    Point2D Center() const { return BoundBox().Center(); }
 
-    std::array<Point2D, 2> Vertices() const {
-        return {pt1, pt2};
-    }
+    std::array<Point2D, 2> Vertices() const { return {pt1, pt2}; }
 
-    std::array<LineSegment, 2> Edges() const {
-        return {LineSegment{pt1, pt2}, LineSegment{pt2, pt1}};
-    }
+    std::array<LineSegment, 2> Edges() const { return {LineSegment{pt1, pt2}, LineSegment{pt2, pt1}}; }
 
     bool Contains(const Point2D &pt) const {
         return std::abs(Direction().CrossProduct(pt - pt1)) < 1e-10 && BoundBox().Contains(pt);
@@ -141,9 +110,7 @@ struct Triangle {
         std::ranges::copy(list, pts.begin());
     }
 
-    bool operator==(const Triangle &other) const {
-        return pts == other.pts;
-    }
+    bool operator==(const Triangle &other) const { return pts == other.pts; }
 
     double Area() const {
         const Point2D a = pts[1] - pts[0];
@@ -151,21 +118,13 @@ struct Triangle {
         return std::abs(a.CrossProduct(b)) / 2;
     }
 
-    double UnusualHeight() const {
-        return BoundBox().max_y;
-    }
+    double UnusualHeight() const { return BoundBox().max_y; }
 
-    Point2D Center() const {
-        return std::ranges::fold_left(pts, Point2D{0, 0}, std::plus<>{}) / 3;
-    }
+    Point2D Center() const { return std::ranges::fold_left(pts, Point2D{0, 0}, std::plus<>{}) / 3; }
 
-    BoundingBox BoundBox() const {
-        return BoundingBox{pts[0], pts[1], pts[2]};
-    }
+    BoundingBox BoundBox() const { return BoundingBox{pts[0], pts[1], pts[2]}; }
 
-    std::array<Point2D, 3> Vertices() const {
-        return pts;
-    }
+    std::array<Point2D, 3> Vertices() const { return pts; }
 
     std::array<LineSegment, 3> Edges() const {
         return {LineSegment{pts[0], pts[1]}, LineSegment{pts[1], pts[2]}, LineSegment{pts[2], pts[0]}};
@@ -178,9 +137,7 @@ struct Rectangle {
     constexpr Rectangle(Point2D pt1, double width, double height) : pt1(pt1), pt2(pt1.x + width, pt1.y + height) {}
     constexpr Rectangle(Point2D pt1, Point2D pt2) : pt1(pt1), pt2(pt2) {}
 
-    bool operator==(const Rectangle &other) const {
-        return pt1 == other.pt1 && pt2 == other.pt2;
-    }
+    bool operator==(const Rectangle &other) const { return pt1 == other.pt1 && pt2 == other.pt2; }
 
     double Width() const { return std::abs(pt2.x - pt1.x); }
 
@@ -203,9 +160,7 @@ struct Rectangle {
         };
     }
 
-    double UnusualHeight() const {
-        return BoundBox().max_y;
-    }
+    double UnusualHeight() const { return BoundBox().max_y; }
 };
 
 struct RegularPolygon {
@@ -231,9 +186,7 @@ struct RegularPolygon {
         return points;
     }
 
-    BoundingBox BoundBox() const {
-        return BoundingBox{Vertices()};
-    }
+    BoundingBox BoundBox() const { return BoundingBox{Vertices()}; }
 
     Point2D Center() const { return center_p; }
 
@@ -247,9 +200,7 @@ struct RegularPolygon {
         return edges;
     }
 
-    double UnusualHeight() const {
-        return BoundBox().max_y;
-    }
+    double UnusualHeight() const { return BoundBox().max_y; }
 };
 
 struct Circle {
@@ -258,9 +209,7 @@ struct Circle {
 
     constexpr Circle(Point2D center, double radius) : center(center), radius(radius) {}
 
-    bool operator==(const Circle &other) const {
-        return center == other.center && radius == other.radius;
-    }
+    bool operator==(const Circle &other) const { return center == other.center && radius == other.radius; }
 
     BoundingBox BoundBox() const {
         return {center.x - radius, center.y - radius, center.x + radius, center.y + radius};
@@ -295,27 +244,21 @@ class Polygon {
 public:
     Polygon() = default;
 
-    explicit Polygon(std::vector<Point2D> vertices): vertices_(std::move(vertices)) {
+    explicit Polygon(std::vector<Point2D> vertices) : vertices_(std::move(vertices)) {
         if (vertices_.size() < 3) {
             throw std::logic_error("Gotta have at least 3 points in polygon");
         }
     }
 
-    bool operator==(const Polygon &other) const {
-        return vertices_ == other.vertices_;
-    }
+    bool operator==(const Polygon &other) const { return vertices_ == other.vertices_; }
 
-    BoundingBox BoundBox() const {
-        return BoundingBox{vertices_};
-    }
+    BoundingBox BoundBox() const { return BoundingBox{vertices_}; }
 
     Point2D Center() const {
         return std::ranges::fold_left(vertices_, Point2D{0, 0}, std::plus<>{}) / vertices_.size();
     }
 
-    double UnusualHeight() const {
-        return BoundBox().max_y;
-    }
+    double UnusualHeight() const { return BoundBox().max_y; }
 
     double Area() const {
         double area = 0;
@@ -343,14 +286,16 @@ private:
 
 using Shape = std::variant<LineSegment, Triangle, Rectangle, RegularPolygon, Circle, Polygon>;
 
-inline bool Distinct(const Shape& shape1, const Shape& shape2) {
-    return std::visit([](const auto& shape1, const auto& shape2) {
-        if constexpr (std::is_same_v<decltype(shape1), decltype(shape2)>) {
-            return !(shape1 == shape2);
-        } else {
-            return false;
-        }
-    }, shape1, shape2);
+inline bool Distinct(const Shape &shape1, const Shape &shape2) {
+    return std::visit(
+        [](const auto &shape1, const auto &shape2) {
+            if constexpr (std::is_same_v<decltype(shape1), decltype(shape2)>) {
+                return !(shape1 == shape2);
+            } else {
+                return false;
+            }
+        },
+        shape1, shape2);
 }
 
 }  // namespace geometry
@@ -397,7 +342,7 @@ struct std::formatter<std::vector<geometry::Point2D>> {
         } else {
             out = std::format_to(out, "[");
             bool first = true;
-            for (const auto& p : v) {
+            for (const auto &p : v) {
                 if (!first) {
                     out = std::format_to(out, ", ");
                 }

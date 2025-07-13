@@ -4,7 +4,7 @@
 
 namespace geometry::convex_hull {
 
-template<class T, class Container = std::vector<T>>
+template <class T, class Container = std::vector<T>>
 class StackForGrahamScan {
 public:
     using container_type = Container;
@@ -15,33 +15,19 @@ public:
 
     StackForGrahamScan() = default;
 
-    void push(const Point2D& point) {
-        container_.push_back(point);
-    }
+    void push(const Point2D &point) { container_.push_back(point); }
 
-    void pop() {
-        container_.pop_back();
-    }
+    void pop() { container_.pop_back(); }
 
-    const_reference top() const {
-        return *container_.rbegin();
-    }
+    const_reference top() const { return *container_.rbegin(); }
 
-    const_reference pre_top() const {
-        return *std::next(container_.rbegin());
-    }
+    const_reference pre_top() const { return *std::next(container_.rbegin()); }
 
-    void reserve(size_type N) {
-        container_.reserve(N);
-    }
+    void reserve(size_type N) { container_.reserve(N); }
 
-    size_type size() const {
-        return container_.size();
-    }
+    size_type size() const { return container_.size(); }
 
-    const Container& container() const {
-        return container_;
-    }
+    const Container &container() const { return container_; }
 
 private:
     Container container_;

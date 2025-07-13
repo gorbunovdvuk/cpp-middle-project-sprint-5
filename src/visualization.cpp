@@ -7,8 +7,10 @@
 
 namespace geometry::visualization {
 
-auto xs = std::views::transform([](const auto& line) { return std::vector{line.pt1.x, line.pt2.x}; }) | std::views::join | std::ranges::to<std::vector>();
-auto ys = std::views::transform([](const auto& line) { return std::vector{line.pt1.y, line.pt2.y}; }) | std::views::join | std::ranges::to<std::vector>();
+auto xs = std::views::transform([](const auto &line) { return std::vector{line.pt1.x, line.pt2.x}; }) |
+          std::views::join | std::ranges::to<std::vector>();
+auto ys = std::views::transform([](const auto &line) { return std::vector{line.pt1.y, line.pt2.y}; }) |
+          std::views::join | std::ranges::to<std::vector>();
 
 template <class... Ts>
 struct Multilambda : Ts... {
@@ -68,9 +70,10 @@ void Draw(std::span<geometry::Shape> shapes) {
 }
 
 void Draw(std::span<const triangulation::DelaunayTriangle> triangles) {
-    std::vector<Shape> shapes{std::from_range, triangles | std::views::transform([](const triangulation::DelaunayTriangle& triangle) {
-        return Triangle{triangle.a, triangle.b, triangle.c};
-    })};
+    std::vector<Shape> shapes{std::from_range,
+                              triangles | std::views::transform([](const triangulation::DelaunayTriangle &triangle) {
+                                  return Triangle{triangle.a, triangle.b, triangle.c};
+                              })};
     Draw(shapes);
 }
 

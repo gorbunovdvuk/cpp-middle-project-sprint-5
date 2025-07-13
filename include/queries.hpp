@@ -9,7 +9,7 @@ namespace geometry::queries {
 
 template <class... Ts>
 struct Overloaded : Ts... {
-    explicit Overloaded(Ts&&... args): Ts(std::move(args))... {}
+    explicit Overloaded(Ts &&...args) : Ts(std::move(args))... {}
 
     using Ts::operator()...;
 };
@@ -19,29 +19,26 @@ struct PointToShapeDistanceVisitor {
 
     explicit PointToShapeDistanceVisitor(const Point2D &p) : point(p) {}
 
-    double operator()(const LineSegment& segment) const;
+    double operator()(const LineSegment &segment) const;
 
-    template<typename Shape>
-    requires traits::is_one_of<Shape, Triangle, Rectangle, RegularPolygon, Polygon>
-    double operator()(const Shape& shape) const {
-        return std::ranges::min(shape.Edges() | std::views::transform([this](const LineSegment& segment) {
-            return (*this)(segment);
-        }));
+    template <typename Shape>
+        requires traits::is_one_of<Shape, Triangle, Rectangle, RegularPolygon, Polygon>
+    double operator()(const Shape &shape) const {
+        return std::ranges::min(shape.Edges() |
+                                std::views::transform([this](const LineSegment &segment) { return (*this)(segment); }));
     }
 
-    double operator()(const Circle& circle) const {
-        return std::abs(point.DistanceTo(circle.center) - circle.radius);
-    }
+    double operator()(const Circle &circle) const { return std::abs(point.DistanceTo(circle.center) - circle.radius); }
 };
 
 struct ShapeToShapeDistanceVisitor {
-    template<typename Shape>
-    double operator()(const Point2D& point, const Shape& shape) const {
+    template <typename Shape>
+    double operator()(const Point2D &point, const Shape &shape) const {
         return PointToShapeDistanceVisitor(point)(shape);
     }
 
-    template<typename Shape>
-    double operator()(const Shape& shape, const Point2D& point) const {
+    template <typename Shape>
+    double operator()(const Shape &shape, const Point2D &point) const {
         return PointToShapeDistanceVisitor(point)(shape);
     }
 

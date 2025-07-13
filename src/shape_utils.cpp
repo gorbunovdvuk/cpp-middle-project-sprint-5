@@ -57,7 +57,8 @@ std::vector<std::tuple<Shape, Shape>> FindAllCollisions(const std::vector<Shape>
     return std::vector{std::from_range, ranges::views::cartesian_product(shapes, shapes) |
                                             ranges::views::filter([](const auto &shape_pair) {
                                                 const auto &[shape1, shape2] = shape_pair;
-                                                return Distinct(shape1, shape2) && queries::BoundingBoxesOverlap(shape1, shape2);
+                                                return Distinct(shape1, shape2) &&
+                                                       queries::BoundingBoxesOverlap(shape1, shape2);
                                             })};
 }
 
