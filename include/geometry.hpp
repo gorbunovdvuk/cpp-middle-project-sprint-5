@@ -17,6 +17,10 @@ struct Point2D {
     constexpr Point2D() : x(0), y(0) {}
     constexpr Point2D(double x, double y) : x(x), y(y) {}
 
+    bool operator==(const Point2D &other) const {
+        return x == other.x && y == other.y;
+    }
+
     // Binary math operators
     Point2D operator+(const Point2D &other) const { return {x + other.x, y + other.y}; }
     Point2D operator-(const Point2D &other) const { return {x - other.x, y - other.y}; }
@@ -82,6 +86,10 @@ struct BoundingBox {
 struct LineSegment {
     Point2D pt1, pt2;
 
+    bool operator==(const LineSegment &other) const {
+        return pt1 == other.pt1 && pt2 == other.pt2;
+    }
+
     double Length() const {
         return pt2.DistanceTo(pt1);
     }
@@ -133,6 +141,10 @@ struct Triangle {
         std::ranges::copy(list, pts.begin());
     }
 
+    bool operator==(const Triangle &other) const {
+        return pts == other.pts;
+    }
+
     double Area() const {
         const Point2D a = pts[1] - pts[0];
         const Point2D b = pts[2] - pts[0];
@@ -165,6 +177,10 @@ struct Rectangle {
 
     constexpr Rectangle(Point2D pt1, double width, double height) : pt1(pt1), pt2(pt1.x + width, pt1.y + height) {}
     constexpr Rectangle(Point2D pt1, Point2D pt2) : pt1(pt1), pt2(pt2) {}
+
+    bool operator==(const Rectangle &other) const {
+        return pt1 == other.pt1 && pt2 == other.pt2;
+    }
 
     double Width() const { return std::abs(pt2.x - pt1.x); }
 
@@ -199,6 +215,10 @@ struct RegularPolygon {
 
     constexpr RegularPolygon(Point2D center, double radius, int sides)
         : center_p(center), radius(radius), sides(sides) {}
+
+    bool operator==(const RegularPolygon &other) const {
+        return center_p == other.center_p && radius == other.radius && sides == other.sides;
+    }
 
     std::vector<Point2D> Vertices() const {
         std::vector<Point2D> points;
@@ -238,9 +258,14 @@ struct Circle {
 
     constexpr Circle(Point2D center, double radius) : center(center), radius(radius) {}
 
+    bool operator==(const Circle &other) const {
+        return center == other.center && radius == other.radius;
+    }
+
     BoundingBox BoundBox() const {
         return {center.x - radius, center.y - radius, center.x + radius, center.y + radius};
     }
+
     double UnusualHeight() const { return center.y + radius; }
     Point2D Center() const { return center; }
 
@@ -274,6 +299,10 @@ public:
         if (vertices_.size() < 3) {
             throw std::logic_error("Gotta have at least 3 points in polygon");
         }
+    }
+
+    bool operator==(const Polygon &other) const {
+        return vertices_ == other.vertices_;
     }
 
     BoundingBox BoundBox() const {
@@ -313,6 +342,16 @@ private:
 };
 
 using Shape = std::variant<LineSegment, Triangle, Rectangle, RegularPolygon, Circle, Polygon>;
+
+inline bool Distinct(const Shape& shape1, const Shape& shape2) {
+    return std::visit([](const auto& shape1, const auto& shape2) {
+        if constexpr (std::is_same_v<decltype(shape1), decltype(shape2)>) {
+            return !(shape1 == shape2);
+        } else {
+            return false;
+        }
+    }, shape1, shape2);
+}
 
 }  // namespace geometry
 

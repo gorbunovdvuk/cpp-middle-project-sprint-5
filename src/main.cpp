@@ -18,7 +18,7 @@ void PrintAllIntersections(const Shape &shape, const std::vector<Shape>& others)
     std::visit([](const auto& shape) {
         std::println("\n=== Intersections for {}===", shape);
     }, shape);
-    std::ranges::for_each(others | std::views::transform([&shape](const auto& other) {
+    std::ranges::for_each(others | std::views::filter([&shape](const auto& other) { return Distinct(shape, other); }) | std::views::transform([&shape](const auto& other) {
         return intersections::GetIntersectionPoints(shape, other).transform([&shape, &other](const auto& pts) {
             return std::tuple{shape, other, pts};
         });
@@ -65,7 +65,7 @@ void PerformShapeAnalysis(std::vector<Shape> shapes) {
 
     const auto [shape1, shape2] = (ranges::views::cartesian_product(shapes, shapes) | ranges::views::filter([](const auto& shapes_tuple) {
         const auto &[shape1, shape2] = shapes_tuple;
-        return queries::DistanceBetweenShapes(shape1, shape2).has_value();
+        return Distinct(shape1, shape2) && queries::DistanceBetweenShapes(shape1, shape2).has_value();
     }) | ranges::views::take(1)).front();
 
     std::visit([](const auto& shape1, const auto& shape2) {
