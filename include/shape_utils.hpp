@@ -1,19 +1,19 @@
 #pragma once
 #include "geometry.hpp"
 #include "queries.hpp"
-#include <print>
 #include <random>
+#include <range/v3/all.hpp>
 #include <ranges>
-#include <utility>
 #include <vector>
 
 namespace geometry::utils {
 
 class ShapeGenerator {
 public:
-    ShapeGenerator(double min_coord = -100.0, double max_coord = 100.0, double min_size = 1.0, double max_size = 20.0)
-        : gen(20), coord_dist(min_coord, max_coord), size_dist(min_size, max_size), sides_dist(3, 12), type_dist(0, 4) {
-    }
+    explicit ShapeGenerator(double min_coord = -100.0, double max_coord = 100.0, double min_size = 1.0,
+                            double max_size = 20.0)
+        : gen(20), angle_dist(0, 2 * M_PI), coord_dist(min_coord, max_coord), size_dist(min_size, max_size),
+          sides_dist(3, 12), type_dist(0, 4) {}
 
     Shape GenerateRandomShape() {
         Point2D center{coord_dist(gen), coord_dist(gen)};
@@ -21,13 +21,15 @@ public:
 
         switch (type_dist(gen)) {
         case 0: {
-            Point2D end{center.x + size, center.y + size};
-            return Line{center, end};
+            double angle = angle_dist(gen);
+            Point2D end{center.x + size * std::sin(angle), center.y + size * std::cos(angle)};
+            return LineSegment{center, end};
         }
         case 1: {
+            double angle = angle_dist(gen);
             Point2D a{center.x, center.y};
-            Point2D b{center.x + size, center.y};
-            Point2D c{center.x + size / 2, center.y + size};
+            Point2D b{center.x + size * std::sin(angle), center.y};
+            Point2D c{center.x + size * std::sin(angle) / 2, center.y + size * std::cos(angle)};
             return Triangle{a, b, c};
         }
         case 2: {
@@ -57,35 +59,31 @@ public:
 
 private:
     std::mt19937 gen;
+    std::uniform_real_distribution<double> angle_dist;
     std::uniform_real_distribution<double> coord_dist;
     std::uniform_real_distribution<double> size_dist;
     std::uniform_int_distribution<int> sides_dist;
     std::uniform_int_distribution<int> type_dist;
 };
 
-std::vector<std::pair<Shape, Shape>> FindAllCollisions(DummyClass shapes) {
-    std::vector<std::pair<Shape, Shape>> collisions;
-
-    /*
-     * Используйте библиотеку ranges, чтобы найти все коллизии между фигурами
-     *
-     * Важно: использование ручной итерации по фигурам не разрешается
-     *
-     * Также используйте наиболее эффективный метод добавления объектов в collisions
-     */
-
-    return collisions;
+inline std::vector<std::tuple<Shape, Shape>> FindAllCollisions(const std::vector<Shape> &shapes) {
+    return std::vector{
+        std::from_range,
+        ranges::views::cartesian_product(shapes, shapes) |
+            ranges::views::filter([](const auto &shape_pair) {
+                const auto &[shape1, shape2] = shape_pair;
+                return queries::BoundingBoxesOverlap(shape1, shape2);
+            })
+    };
 }
 
-std::optional<size_t> FindHighestShape(DummyClass shapes) {
-
-    /*
-     * Используйте библиотеку ranges, чтобы найти самую высокую фигуру
-     *
-     * Важно: использование ручной итерации по фигурам не разрешается
-     */
-
-    return std::nullopt;
+inline std::optional<size_t> FindUnusuallyHighestShape(const std::vector<Shape>& shapes) {
+    if (shapes.empty()) {
+        return std::nullopt;
+    }
+    return ranges::max_element(shapes, std::less<>{}, [](const auto& shape) {
+        return queries::GetUnusualHeight(shape);
+    }) - shapes.begin();
 }
 
 }  // namespace geometry::utils
