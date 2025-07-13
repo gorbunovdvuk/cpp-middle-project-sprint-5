@@ -56,7 +56,7 @@ std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points)
         Point2D p1, p2;
 
         Edge(Point2D p1, Point2D p2) : p1(p1), p2(p2) {
-            if (p1.x > p2.x || (p1.x == p2.x && p1.y > p2.y)) {
+            if (p1.x > p2.x + 1e-10 || (std::abs(p1.x - p2.x) && p1.y > p2.y + 1e-10)) {
                 std::swap(this->p1, this->p2);
             }
         }
@@ -85,7 +85,7 @@ std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points)
     });
 
     points.erase(
-        std::unique(points.begin(), points.end(), [](const auto &pt1, const auto &pt2) { return pt1.Equals(pt2); }),
+        std::ranges::unique(points, [](const auto &pt1, const auto &pt2) { return pt1.Equals(pt2); }).begin(),
         points.end());
 
     if (points.size() < 3) {
@@ -119,8 +119,8 @@ std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points)
                                             })
                          .begin(),
                      result.end());
-        for (const auto &edge : edges | std::views::keys) {
-            if (edges[edge] == 1) {
+        for (const auto &[edge, count] : edges) {
+            if (count == 1) {
                 result.emplace_back(pt, edge.p1, edge.p2);
             }
         }

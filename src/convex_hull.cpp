@@ -41,7 +41,7 @@ std::vector<Point2D> GrahamScan(std::vector<Point2D> points) {
         return p1.x + 1e-10 < p2.x;
     });
     points.erase(
-        std::unique(points.begin(), points.end(), [](const Point2D &p1, const Point2D &p2) { return p1.Equals(p2); }),
+        std::ranges::unique(points, [](const Point2D &p1, const Point2D &p2) { return p1.Equals(p2); }).begin(),
         points.end());
 
     const auto pt0 = points.front();

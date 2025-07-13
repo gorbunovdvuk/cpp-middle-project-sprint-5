@@ -338,7 +338,7 @@ struct std::formatter<std::vector<geometry::Point2D>> {
         if (use_new_line) {
             out = std::format_to(out, "[\n");
             for (const auto &p : v) {
-                out = std::format_to(out, "    {},\n", p);
+                out = std::format_to(out, "\t{},\n", p);
             }
             out = std::format_to(out, "]");
         } else {

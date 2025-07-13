@@ -7,9 +7,9 @@
 
 namespace geometry::visualization {
 
-auto xs = std::views::transform([](const auto &line) { return std::vector{line.pt1.x, line.pt2.x}; }) |
+static auto xs = std::views::transform([](const auto &line) { return std::vector{line.pt1.x, line.pt2.x}; }) |
           std::views::join | std::ranges::to<std::vector>();
-auto ys = std::views::transform([](const auto &line) { return std::vector{line.pt1.y, line.pt2.y}; }) |
+static auto ys = std::views::transform([](const auto &line) { return std::vector{line.pt1.y, line.pt2.y}; }) |
           std::views::join | std::ranges::to<std::vector>();
 
 template <class... Ts>
