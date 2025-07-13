@@ -1,6 +1,5 @@
 #pragma once
 #include "geometry.hpp"
-#include <cmath>
 #include <optional>
 
 namespace geometry::intersections {

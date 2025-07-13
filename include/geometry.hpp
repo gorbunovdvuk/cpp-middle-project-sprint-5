@@ -2,15 +2,12 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
-#include <expected>
 #include <format>
 #include <numbers>
-#include <optional>
 #include <print>
 #include <ranges>
 #include <variant>
 #include <vector>
-#include <any>
 
 namespace geometry {
 

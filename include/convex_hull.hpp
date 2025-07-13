@@ -1,9 +1,5 @@
 #pragma once
 #include "geometry.hpp"
-#include <algorithm>
-#include <range/v3/view/adjacent_filter.hpp>
-#include <ranges>
-#include <stack>
 #include <vector>
 
 namespace geometry::convex_hull {

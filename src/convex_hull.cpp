@@ -1,5 +1,6 @@
 #include "convex_hull.hpp"
 #include <algorithm>
+#include <range/v3/all.hpp>
 
 namespace geometry::convex_hull {
 

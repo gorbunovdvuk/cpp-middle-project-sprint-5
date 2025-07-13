@@ -1,10 +1,7 @@
 #pragma once
 #include "geometry.hpp"
-#include <algorithm>
 #include <format>
-#include <set>
 #include <vector>
-#include <map>
 
 namespace geometry::triangulation {
 

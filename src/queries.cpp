@@ -1,4 +1,5 @@
 #include "queries.hpp"
+#include "intersections.hpp"
 
 namespace geometry::queries {
 

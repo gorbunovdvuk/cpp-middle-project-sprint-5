@@ -3,6 +3,7 @@
 //
 
 #include "shape_utils.hpp"
+#include <range/v3/all.hpp>
 
 namespace geometry::utils {
 

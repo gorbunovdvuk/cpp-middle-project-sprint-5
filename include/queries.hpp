@@ -1,11 +1,9 @@
 #pragma once
 #include "geometry.hpp"
-#include "intersections.hpp"
 #include "type_traits.hpp"
 
 #include <algorithm>
 #include <optional>
-#include <variant>
 
 namespace geometry::queries {
 

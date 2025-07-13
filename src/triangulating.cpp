@@ -3,6 +3,7 @@
 //
 
 #include "triangulation.hpp"
+#include <map>
 
 namespace geometry::triangulation {
 

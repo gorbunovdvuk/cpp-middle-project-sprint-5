@@ -2,8 +2,6 @@
 #include "geometry.hpp"
 #include "queries.hpp"
 #include <random>
-#include <range/v3/all.hpp>
-#include <ranges>
 #include <vector>
 
 namespace geometry::utils {
