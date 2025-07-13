@@ -20,10 +20,6 @@ struct Point2D {
     constexpr Point2D() : x(0), y(0) {}
     constexpr Point2D(double x, double y) : x(x), y(y) {}
 
-    // Comparison
-    bool operator<(const Point2D &other) const { return x < other.x && y < other.y; }
-    bool operator==(const Point2D &other) const { return x == other.x && y == other.y; }
-
     // Binary math operators
     Point2D operator+(const Point2D &other) const { return {x + other.x, y + other.y}; }
     Point2D operator-(const Point2D &other) const { return {x - other.x, y - other.y}; }
