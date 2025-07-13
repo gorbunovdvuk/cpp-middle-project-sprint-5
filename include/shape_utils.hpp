@@ -24,8 +24,8 @@ private:
     std::uniform_int_distribution<int> type_dist;
 };
 
-std::vector<std::tuple<Shape, Shape>> FindAllCollisions(const std::vector<Shape> &shapes);
+std::vector<std::tuple<Shape, Shape>> FindAllCollisions(std::span<const Shape> shapes);
 
-std::optional<size_t> FindUnusuallyHighestShape(const std::vector<Shape> &shapes);
+std::optional<size_t> FindUnusuallyHighestShape(std::span<const Shape> shapes);
 
 }  // namespace geometry::utils

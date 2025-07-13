@@ -6,9 +6,9 @@
 
 namespace geometry::intersections {
 
-std::vector<Point2D> IntersectionVisitor::operator()(const LineSegment &segment1, const LineSegment &segment2) {
-    double a1 = (segment1.pt2 - segment1.pt1).Norm().x, b1 = (segment1.pt2 - segment1.pt1).Norm().y;
-    double a2 = (segment2.pt2 - segment2.pt1).Norm().x, b2 = (segment2.pt2 - segment2.pt1).Norm().y;
+std::vector<Point2D> IntersectionVisitor::operator()(const LineSegment &segment1, const LineSegment &segment2) const {
+    double a1 = (segment1.pt2 - segment1.pt1).NormalVector().x, b1 = (segment1.pt2 - segment1.pt1).NormalVector().y;
+    double a2 = (segment2.pt2 - segment2.pt1).NormalVector().x, b2 = (segment2.pt2 - segment2.pt1).NormalVector().y;
     double c1 = -(a1 * segment1.pt1.x + b1 * segment1.pt1.y), c2 = -(a2 * segment2.pt1.x + b2 * segment2.pt1.y);
     double det = a1 * b2 - a2 * b1;
     if (std::abs(det) < 1e-10) {
@@ -21,7 +21,7 @@ std::vector<Point2D> IntersectionVisitor::operator()(const LineSegment &segment1
     }
     return {};
 }
-std::vector<Point2D> IntersectionVisitor::operator()(const LineSegment &segment, const Circle &circle) {
+std::vector<Point2D> IntersectionVisitor::operator()(const LineSegment &segment, const Circle &circle) const {
     Point2D direction = segment.pt2 - segment.pt1;
     Point2D center_vector = segment.pt1 - circle.center;
 
@@ -50,7 +50,7 @@ std::vector<Point2D> IntersectionVisitor::operator()(const LineSegment &segment,
 
     return intersections;
 }
-std::vector<Point2D> IntersectionVisitor::operator()(const Circle &circle1, const Circle &circle2) {
+std::vector<Point2D> IntersectionVisitor::operator()(const Circle &circle1, const Circle &circle2) const {
     double d = (circle2.center - circle1.center).Length();
     if (d > circle2.radius + circle1.radius + 1e-10) {
         return {};
@@ -64,7 +64,7 @@ std::vector<Point2D> IntersectionVisitor::operator()(const Circle &circle1, cons
     if (std::abs(y) < 1e-10) {
         return {middle};
     }
-    Point2D norm = ((circle2.center - circle1.center) / d).Norm();
+    Point2D norm = ((circle2.center - circle1.center) / d).NormalVector();
     return {middle - norm * y, middle + norm * y};
 }
 

@@ -10,15 +10,11 @@ struct DelaunayTriangle {
 
     DelaunayTriangle(Point2D a, Point2D b, Point2D c) : a(a), b(b), c(c) {}
 
-    bool ContainsPoint(const Point2D &p) const;
-
-    Point2D Circumcenter() const;
-
-    double Circumradius() const;
-
-    bool SharesEdge(const DelaunayTriangle &other) const;
-
-    std::vector<Point2D> vertices() const { return {a, b, c}; }
+    [[nodiscard]] bool ContainsPoint(const Point2D &p) const;
+    [[nodiscard]] Point2D Circumcenter() const;
+    [[nodiscard]] double Circumradius() const;
+    [[nodiscard]] bool SharesEdge(const DelaunayTriangle &other) const;
+    [[nodiscard]] std::vector<Point2D> vertices() const { return {a, b, c}; }
 };
 
 std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points);

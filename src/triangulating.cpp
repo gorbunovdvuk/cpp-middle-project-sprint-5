@@ -33,9 +33,10 @@ double DelaunayTriangle::Circumradius() const {
     Point2D center = Circumcenter();
     return center.DistanceTo(a);
 }
+
 bool DelaunayTriangle::SharesEdge(const DelaunayTriangle &other) const {
-    std::vector<Point2D> this_points = {a, b, c};
-    std::vector<Point2D> other_points = {other.a, other.b, other.c};
+    std::vector this_points = {a, b, c};
+    std::vector other_points = {other.a, other.b, other.c};
 
     int shared_count = 0;
     for (const Point2D &p1 : this_points) {
@@ -49,6 +50,7 @@ bool DelaunayTriangle::SharesEdge(const DelaunayTriangle &other) const {
 
     return shared_count == 2;
 }
+
 std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points) {
     struct Edge {
         Point2D p1, p2;

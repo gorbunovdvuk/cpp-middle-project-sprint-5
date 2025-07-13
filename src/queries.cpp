@@ -50,7 +50,7 @@ double GetUnusualHeight(const Shape &shape) {
 
 bool BoundingBoxesOverlap(const Shape &shape1, const Shape &shape2) {
     BoundingBox box1 = GetBoundBox(shape1), box2 = GetBoundBox(shape2);
-    return !(box1.max_x < box2.min_x || box2.max_x < box1.min_x || box1.max_y < box2.min_y || box1.min_y > box2.max_y);
+    return box1.Overlaps(box2);
 }
 
 std::optional<double> DistanceBetweenShapes(const Shape &shape1, const Shape &shape2) {

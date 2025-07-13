@@ -53,7 +53,7 @@ std::vector<Shape> ShapeGenerator::GenerateShapes(size_t count) {
     return shapes;
 }
 
-std::vector<std::tuple<Shape, Shape>> FindAllCollisions(const std::vector<Shape> &shapes) {
+std::vector<std::tuple<Shape, Shape>> FindAllCollisions(std::span<const Shape> shapes) {
     return std::vector{std::from_range, ranges::views::cartesian_product(shapes, shapes) |
                                             ranges::views::filter([](const auto &shape_pair) {
                                                 const auto &[shape1, shape2] = shape_pair;
@@ -62,7 +62,7 @@ std::vector<std::tuple<Shape, Shape>> FindAllCollisions(const std::vector<Shape>
                                             })};
 }
 
-std::optional<size_t> FindUnusuallyHighestShape(const std::vector<Shape> &shapes) {
+std::optional<size_t> FindUnusuallyHighestShape(std::span<const Shape> shapes) {
     if (shapes.empty()) {
         return std::nullopt;
     }

@@ -14,7 +14,7 @@
 
 using namespace geometry;
 
-void PrintAllIntersections(const Shape &shape, const std::vector<Shape> &others) {
+void PrintAllIntersections(const Shape &shape, std::span<const Shape> others) {
     std::visit([](const auto &shape) { std::println("\n=== Intersections for {}===", shape); }, shape);
     std::ranges::for_each(
         others | std::views::filter([&shape](const auto &other) { return Distinct(shape, other); }) |
@@ -36,7 +36,7 @@ void PrintAllIntersections(const Shape &shape, const std::vector<Shape> &others)
         });
 }
 
-void PrintDistancesFromPointToShapes(Point2D p, std::vector<Shape> shapes) {
+void PrintDistancesFromPointToShapes(Point2D p, std::span<const Shape> shapes) {
     std::println("\n=== Distance from Point Test ===");
     std::println("Testing point: {} ", p);
 
@@ -53,7 +53,7 @@ void PrintDistancesFromPointToShapes(Point2D p, std::vector<Shape> shapes) {
     }
 }
 
-void PerformShapeAnalysis(std::vector<Shape> shapes) {
+void PerformShapeAnalysis(std::span<const Shape> shapes) {
     std::println("\n=== Shape Analysis ===");
 
     for (const auto &[shape1, shape2] : utils::FindAllCollisions(shapes)) {
@@ -88,7 +88,7 @@ void PerformShapeAnalysis(std::vector<Shape> shapes) {
         shape1, shape2);
 }
 
-void PerformExtraShapeAnalysis(std::vector<Shape> shapes) {
+void PerformExtraShapeAnalysis(std::span<const Shape> shapes) {
     std::println("\n=== Shape Extra Analysis ===");
 
     for (const auto &shape : shapes | std::views::filter([](const auto &shape) {
