@@ -14,17 +14,6 @@
 
 namespace geometry {
 
-struct LineSegment;
-struct Triangle;
-struct Rectangle;
-struct RegularPolygon;
-struct Circle;
-class Polygon;
-
-using DummyClass = std::any;
-
-using Shape = std::variant<LineSegment, Triangle, Rectangle, RegularPolygon, Circle, Polygon>;
-
 struct Point2D {
     double x, y;
 
@@ -79,10 +68,10 @@ struct BoundingBox {
 
     template<std::ranges::range R>
     constexpr explicit BoundingBox(R&& pts): BoundingBox(
-        std::ranges::min(std::forward<R>(pts), std::less<>{}, [](const auto& pt) { return pt.x; }).x,
-        std::ranges::min(std::forward<R>(pts), std::less<>{}, [](const auto& pt) { return pt.y; }).y,
-        std::ranges::max(std::forward<R>(pts), std::less<>{}, [](const auto& pt) { return pt.x; }).x,
-        std::ranges::max(std::forward<R>(pts), std::less<>{}, [](const auto& pt) { return pt.y; }).y
+        std::ranges::min(pts, std::less<>{}, [](const auto& pt) { return pt.x; }).x,
+        std::ranges::min(pts, std::less<>{}, [](const auto& pt) { return pt.y; }).y,
+        std::ranges::max(pts, std::less<>{}, [](const auto& pt) { return pt.x; }).x,
+        std::ranges::max(pts, std::less<>{}, [](const auto& pt) { return pt.y; }).y
     ) {}
 
     constexpr BoundingBox(std::initializer_list<Point2D> pts): BoundingBox(std::ranges::subrange(pts.begin(), pts.end())) {}
@@ -330,10 +319,7 @@ private:
     std::vector<Point2D> vertices_;
 };
 
-enum class GeometryError { Unsupported, NoIntersection, InvalidInput, DegenrateCase, InsufficientPoints };
-
-template <typename T>
-using GeometryResult = std::expected<T, GeometryError>;
+using Shape = std::variant<LineSegment, Triangle, Rectangle, RegularPolygon, Circle, Polygon>;
 
 }  // namespace geometry
 
