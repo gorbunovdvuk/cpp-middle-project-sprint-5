@@ -20,8 +20,8 @@ TEST(IntersectionsTest, TestSegmentSegmentIntersecting) {
 TEST(IntersectionsTest, TestSegmentSegmentNonIntersecting) {
     LineSegment line1{{1, 1}, {3, 5}};
     LineSegment line2{{2, 2}, {5, 3}};
-    auto result = intersections::GetIntersectionPoints(line1, line2).value();
-    EXPECT_TRUE(result.empty());
+    auto result = intersections::GetIntersectionPoints(line1, line2);
+    EXPECT_TRUE(result == std::unexpected{GeometryError::NoIntersection});
 }
 
 TEST(IntersectionsTest, TestSegmentSegmentSameVertex) {
@@ -34,22 +34,22 @@ TEST(IntersectionsTest, TestSegmentSegmentSameVertex) {
 TEST(IntersectionsTest, TestSegmentSegmentParallel) {
     LineSegment line1{{1, 1}, {3, 3}};
     LineSegment line2{{4, 4}, {5, 5}};
-    auto result = intersections::GetIntersectionPoints(line1, line2).value();
-    EXPECT_TRUE(result.empty());
+    auto result = intersections::GetIntersectionPoints(line1, line2);
+    EXPECT_TRUE(result == std::unexpected{GeometryError::DegenerateCase});
 }
 
 TEST(IntersectionsTest, TestSegmentSegmentNested) {
     LineSegment line1{{1, 1}, {3, 3}};
     LineSegment line2{{0, 0}, {4, 4}};
-    auto result = intersections::GetIntersectionPoints(line1, line2).value();
-    EXPECT_TRUE(result.empty());
+    auto result = intersections::GetIntersectionPoints(line1, line2);
+    EXPECT_TRUE(result == std::unexpected{GeometryError::DegenerateCase});
 }
 
 TEST(IntersectionsTest, TestSegmentSegmentCommonSegment) {
     LineSegment line1{{1, 1}, {3, 3}};
     LineSegment line2{{2, 2}, {4, 4}};
-    auto result = intersections::GetIntersectionPoints(line1, line2).value();
-    EXPECT_TRUE(result.empty());
+    auto result = intersections::GetIntersectionPoints(line1, line2);
+    EXPECT_TRUE(result == std::unexpected{GeometryError::DegenerateCase});
 }
 
 TEST(IntersectionsTest, TestCircleCircleDoubleIntersecting) {
@@ -76,8 +76,8 @@ TEST(IntersectionsTest, TestCircleCircleSingleIntersectingFromInterior) {
 
 TEST(IntersectionsTest, TestCircleCircleNonIntersecting) {
     Circle circle1{{0, 0}, 1}, circle2{{3, 3}, 1};
-    auto result = intersections::GetIntersectionPoints(circle1, circle2).value();
-    EXPECT_TRUE(result.empty());
+    auto result = intersections::GetIntersectionPoints(circle1, circle2);
+    EXPECT_TRUE(result == std::unexpected{GeometryError::NoIntersection});
 }
 
 TEST(IntersectionsTest, TestCircleSegmentTwoIntersections) {
