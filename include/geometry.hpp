@@ -7,6 +7,7 @@
 #include <ranges>
 #include <variant>
 #include <vector>
+#include <expected>
 
 namespace geometry {
 
@@ -299,6 +300,11 @@ inline bool Distinct(const Shape &shape1, const Shape &shape2) {
         },
         shape1, shape2);
 }
+
+enum class GeometryError { Unsupported, NoIntersection, InvalidInput, DegenerateCase, InsufficientPoints };
+
+template <typename T>
+using GeometryResult = std::expected<T, GeometryError>;
 
 }  // namespace geometry
 

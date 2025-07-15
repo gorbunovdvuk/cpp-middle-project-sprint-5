@@ -22,7 +22,7 @@ double PointToShapeDistanceVisitor::operator()(const LineSegment &segment) const
 
 std::optional<double> ShapeToShapeDistanceVisitor::operator()(const LineSegment &segment1,
                                                               const LineSegment &segment2) const {
-    if (!intersections::IntersectionVisitor{}(segment1, segment2).empty()) {
+    if (intersections::IntersectionVisitor{}(segment1, segment2).has_value()) {
         return 0;
     }
     return std::min(PointToShapeDistanceVisitor(segment1.pt1)(segment2),
@@ -30,7 +30,7 @@ std::optional<double> ShapeToShapeDistanceVisitor::operator()(const LineSegment 
 }
 
 std::optional<double> ShapeToShapeDistanceVisitor::operator()(const Circle &circle1, const Circle &circle2) const {
-    if (!intersections::IntersectionVisitor{}(circle1, circle2).empty()) {
+    if (intersections::IntersectionVisitor{}(circle1, circle2).has_value()) {
         return 0;
     }
     return std::abs(circle1.center.DistanceTo(circle2.center) - circle1.radius - circle2.radius);

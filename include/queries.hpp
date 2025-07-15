@@ -33,12 +33,12 @@ struct PointToShapeDistanceVisitor {
 
 struct ShapeToShapeDistanceVisitor {
     template <typename Shape>
-    double operator()(const Point2D &point, const Shape &shape) const {
+    std::optional<double> operator()(const Point2D &point, const Shape &shape) const {
         return PointToShapeDistanceVisitor(point)(shape);
     }
 
     template <typename Shape>
-    double operator()(const Shape &shape, const Point2D &point) const {
+    std::optional<double> operator()(const Shape &shape, const Point2D &point) const {
         return PointToShapeDistanceVisitor(point)(shape);
     }
 

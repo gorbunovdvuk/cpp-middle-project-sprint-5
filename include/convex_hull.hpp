@@ -4,6 +4,6 @@
 
 namespace geometry::convex_hull {
 
-std::vector<Point2D> GrahamScan(std::vector<Point2D> points);
+GeometryResult<std::vector<Point2D>> GrahamScan(std::vector<Point2D> points);
 
 }  // namespace geometry::convex_hull

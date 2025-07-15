@@ -6,19 +6,19 @@ namespace geometry::intersections {
 
 class IntersectionVisitor {
 public:
-    std::vector<Point2D> operator()(const LineSegment &segment1, const LineSegment &segment2) const;
+    GeometryResult<std::vector<Point2D>> operator()(const LineSegment &segment1, const LineSegment &segment2) const;
 
-    std::vector<Point2D> operator()(const LineSegment &segment, const Circle &circle) const;
+    GeometryResult<std::vector<Point2D>> operator()(const LineSegment &segment, const Circle &circle) const;
 
-    std::vector<Point2D> operator()(const Circle &circle, const LineSegment &segment) const {
+    GeometryResult<std::vector<Point2D>> operator()(const Circle &circle, const LineSegment &segment) const {
         return this->operator()(segment, circle);
     }
 
-    std::vector<Point2D> operator()(const Circle &circle1, const Circle &circle2) const;
+    GeometryResult<std::vector<Point2D>> operator()(const Circle &circle1, const Circle &circle2) const;
 
-    std::vector<Point2D> operator()(const auto &, const auto &) const { throw std::logic_error("Unsupported intersection"); }
+    GeometryResult<std::vector<Point2D>> operator()(const auto &, const auto &) const { throw std::logic_error("Unsupported intersection"); }
 };
 
-std::optional<std::vector<Point2D>> GetIntersectionPoints(const Shape &shape1, const Shape &shape2);
+GeometryResult<std::vector<Point2D>> GetIntersectionPoints(const Shape &shape1, const Shape &shape2);
 
 }  // namespace geometry::intersections

@@ -33,7 +33,11 @@ private:
     Container container_;
 };
 
-std::vector<Point2D> GrahamScan(std::vector<Point2D> points) {
+GeometryResult<std::vector<Point2D>> GrahamScan(std::vector<Point2D> points) {
+    if (points.empty()) {
+        return std::unexpected{GeometryError::InsufficientPoints};
+    }
+
     std::ranges::sort(points, [](const Point2D &p1, const Point2D &p2) {
         if (std::abs(p1.x - p2.x) < 1e-10) {
             return p1.y + 1e-10 < p2.y;
@@ -59,6 +63,11 @@ std::vector<Point2D> GrahamScan(std::vector<Point2D> points) {
                          })};
 
     StackForGrahamScan<Point2D> stack;
+
+    if (filtered.size() < 2) {
+        return std::unexpected{GeometryError::DegenerateCase};
+    }
+
     stack.reserve(filtered.size());
     stack.push(filtered[0]);
     stack.push(filtered[1]);

@@ -24,14 +24,14 @@ void PrintAllIntersections(const Shape &shape, std::span<const Shape> others) {
                 });
             }),
         [](const auto &intersection) {
-            intersection.and_then([](const auto &tuple) {
+            intersection.and_then([](const auto &tuple) -> GeometryResult<void> {
                 const auto &[shape1, shape2, pts] = tuple;
                 std::visit(
                     [&pts](const auto &shape1, const auto &shape2) {
                         std::println("Intersections for {} and {} are {}", shape1, shape2, pts);
                     },
                     shape1, shape2);
-                return std::optional{0};
+                return std::unexpected{GeometryError::Unsupported};
             });
         });
 }
@@ -143,11 +143,16 @@ int main() {
             return std::visit([](const auto &shape) { return std::vector{std::from_range, shape.Vertices()}; }, shape);
         }) | std::views::join);
 
-    std::vector convex_hull = convex_hull::GrahamScan(shapes_points);
-    shapes.emplace_back(Polygon{convex_hull});
+    auto convex_hull = convex_hull::GrahamScan(shapes_points);
+
+    if (!convex_hull.has_value()) {
+        throw std::runtime_error("Convex hull not found");
+    }
+
+    shapes.emplace_back(Polygon{convex_hull.value()});
 
     visualization::Draw(shapes);
-    auto triangulation = triangulation::DelaunayTriangulation(convex_hull);
+    auto triangulation = triangulation::DelaunayTriangulation(convex_hull.value());
 
     visualization::Draw(triangulation);
     return 0;
