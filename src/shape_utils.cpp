@@ -57,11 +57,10 @@ std::vector<Shape> ShapeGenerator::GenerateShapes(size_t count) {
 }
 
 std::vector<std::tuple<Shape, Shape>> FindAllCollisions(std::span<const Shape> shapes) {
-    return std::vector{std::from_range, combinations::combinations(shapes) |
+    return std::vector<std::tuple<Shape, Shape>>{std::from_range, combinations::combinations<2>(shapes) |
                                             ranges::views::filter([](const auto &shape_pair) {
                                                 const auto &[shape1, shape2] = shape_pair;
-                                                return Distinct(shape1, shape2) &&
-                                                       queries::BoundingBoxesOverlap(shape1, shape2);
+                                                return queries::BoundingBoxesOverlap(shape1, shape2);
                                             })};
 }
 

@@ -74,7 +74,7 @@ void PerformShapeAnalysis(std::span<const Shape> shapes) {
         highest_shape);
 
     const auto [shape1, shape2] =
-        (combinations::combinations(shapes) | ranges::views::filter([](const auto &shapes_tuple) {
+        (combinations::combinations<2>(shapes) | ranges::views::filter([](const auto &shapes_tuple) {
              const auto &[shape1, shape2] = shapes_tuple;
              return Distinct(shape1, shape2) && queries::DistanceBetweenShapes(shape1, shape2).has_value();
          }) |

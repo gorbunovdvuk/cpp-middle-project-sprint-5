@@ -16,6 +16,7 @@ endif()
 # Ищем необходимые библиотеки
 find_package(GTest REQUIRED)
 find_package(range-v3 REQUIRED)
+find_package(Boost REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -43,7 +44,7 @@ target_include_directories(${PROJECT_NAME}_imp PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${matplotplusplus_SOURCE_DIR}/source
 )
-target_link_libraries(${PROJECT_NAME}_imp PUBLIC matplot range-v3::range-v3)
+target_link_libraries(${PROJECT_NAME}_imp PUBLIC matplot range-v3::range-v3 boost::boost)
 
 # Создаём исполняемый таргет и линкуем к нему статическую библиотеку
 add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp")

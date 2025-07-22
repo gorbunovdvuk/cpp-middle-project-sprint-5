@@ -10,6 +10,8 @@ class GeometryAppConan(ConanFile):
     def requirements(self):
         self.requires("gtest/1.13.0")
         self.requires("range-v3/0.12.0")
+        self.requires("boost/1.88.0")
+        self.requires("libiconv/1.18", override=True)
         self.tool_requires("cmake/3.30.0")
     
     def layout(self):
