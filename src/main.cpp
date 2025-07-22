@@ -1,3 +1,4 @@
+#include "combinations.hpp"
 #include "convex_hull.hpp"
 #include "geometry.hpp"
 #include "intersections.hpp"
@@ -73,7 +74,7 @@ void PerformShapeAnalysis(std::span<const Shape> shapes) {
         highest_shape);
 
     const auto [shape1, shape2] =
-        (ranges::views::cartesian_product(shapes, shapes) | ranges::views::filter([](const auto &shapes_tuple) {
+        (combinations::combinations(shapes) | ranges::views::filter([](const auto &shapes_tuple) {
              const auto &[shape1, shape2] = shapes_tuple;
              return Distinct(shape1, shape2) && queries::DistanceBetweenShapes(shape1, shape2).has_value();
          }) |
@@ -97,8 +98,7 @@ void PerformExtraShapeAnalysis(std::span<const Shape> shapes) {
         std::visit([](const auto &shape) { std::println("Found shape {} with height > 50", shape); }, shape);
     }
 
-    auto min_height_shape = std::ranges::min(shapes, std::less<>{}, &queries::GetUnusualHeight);
-    auto max_height_shape = std::ranges::max(shapes, std::less<>{}, &queries::GetUnusualHeight);
+    auto [min_height_shape, max_height_shape] = std::ranges::minmax(shapes, std::less<>{}, &queries::GetUnusualHeight);
 
     std::visit(
         [](const auto &shape) {
@@ -152,7 +152,12 @@ int main() {
     shapes.emplace_back(Polygon{convex_hull.value()});
 
     visualization::Draw(shapes);
-    auto triangulation = triangulation::DelaunayTriangulation(convex_hull.value());
+
+    std::vector<Point2D> points{
+        {{0, 0}, {10, 0}, {5, 8}, {15, 5}, {2, 12}}
+    };
+
+    auto triangulation = triangulation::DelaunayTriangulation(points);
 
     visualization::Draw(triangulation);
     return 0;

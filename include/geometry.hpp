@@ -45,10 +45,6 @@ struct Point2D {
 struct BoundingBox {
     double min_x, min_y, max_x, max_y;
 
-    constexpr BoundingBox()
-        : min_x(std::numeric_limits<double>::infinity()), min_y(std::numeric_limits<double>::infinity()),
-          max_x(-std::numeric_limits<double>::infinity()), max_y(-std::numeric_limits<double>::infinity()) {}
-
     constexpr BoundingBox(double x1, double y1, double x2, double y2)
         : min_x(std::min(x1, x2)), min_y(std::min(y1, y2)), max_x(std::max(x1, x2)), max_y(std::max(y1, y2)) {}
 

@@ -54,9 +54,7 @@ bool BoundingBoxesOverlap(const Shape &shape1, const Shape &shape2) {
 }
 
 std::optional<double> DistanceBetweenShapes(const Shape &shape1, const Shape &shape2) {
-    return std::visit(Overloaded{ShapeToShapeDistanceVisitor{},
-                                 [](const auto &, const auto &) -> std::optional<double> { return std::nullopt; }},
-                      shape1, shape2);
+    return std::visit(ShapeToShapeDistanceVisitor{}, shape1, shape2);
 }
 
 }  // namespace geometry::queries

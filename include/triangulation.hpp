@@ -15,9 +15,10 @@ struct DelaunayTriangle {
     [[nodiscard]] double Circumradius() const;
     [[nodiscard]] bool SharesEdge(const DelaunayTriangle &other) const;
     [[nodiscard]] std::vector<Point2D> vertices() const { return {a, b, c}; }
+    [[nodiscard]] bool HasVertex(const Point2D &p) const;
 };
 
-std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points);
+std::vector<DelaunayTriangle> DelaunayTriangulation(std::span<Point2D> points);
 
 }  // namespace geometry::triangulation
 

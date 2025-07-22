@@ -29,6 +29,7 @@ Point2D DelaunayTriangle::Circumcenter() const {
 
     return {ux, uy};
 }
+
 double DelaunayTriangle::Circumradius() const {
     Point2D center = Circumcenter();
     return center.DistanceTo(a);
@@ -51,12 +52,18 @@ bool DelaunayTriangle::SharesEdge(const DelaunayTriangle &other) const {
     return shared_count == 2;
 }
 
-std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points) {
+bool DelaunayTriangle::HasVertex(const Point2D &p) const {
+    return std::ranges::any_of(std::array{a, b, c}, [&p](const auto& pt) {
+        return std::abs(p.x - pt.x) < 1e-10 && std::abs(p.y - pt.y) < 1e-10;
+    });
+}
+
+std::vector<DelaunayTriangle> DelaunayTriangulation(std::span<Point2D> points) {
     struct Edge {
         Point2D p1, p2;
 
         Edge(Point2D p1, Point2D p2) : p1(p1), p2(p2) {
-            if (p1.x > p2.x + 1e-10 || (std::abs(p1.x - p2.x) && p1.y > p2.y + 1e-10)) {
+            if (p1.x > p2.x + 1e-10 || (std::abs(p1.x - p2.x) < 1e-10 && p1.y > p2.y + 1e-10)) {
                 std::swap(this->p1, this->p2);
             }
         }
@@ -84,9 +91,9 @@ std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points)
         return pt1.x + 1e-10 < pt2.x;
     });
 
-    points.erase(
-        std::ranges::unique(points, [](const auto &pt1, const auto &pt2) { return pt1.Equals(pt2); }).begin(),
-        points.end());
+    points = points.first(
+        std::ranges::unique(points, [](const auto &pt1, const auto &pt2) { return pt1.Equals(pt2); }).begin() - points.begin()
+    );
 
     if (points.size() < 3) {
         return {};
@@ -128,8 +135,8 @@ std::vector<DelaunayTriangle> DelaunayTriangulation(std::vector<Point2D> points)
 
     result.erase(std::ranges::remove_if(result,
                                         [&pt1, &pt2, &pt3](const auto &triangle) {
-                                            return triangle.ContainsPoint(pt1) || triangle.ContainsPoint(pt2) ||
-                                                   triangle.ContainsPoint(pt3);
+                                            return triangle.HasVertex(pt1) || triangle.HasVertex(pt2) ||
+                                                   triangle.HasVertex(pt3);
                                         })
                      .begin(),
                  result.end());

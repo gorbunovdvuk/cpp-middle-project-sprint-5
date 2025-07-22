@@ -68,3 +68,9 @@ TEST(QueriesTest, SegmentToSegmentIntersectingDistanceTest) {
     LineSegment segment2{{5, 0}, {0, 5}};
     EXPECT_DOUBLE_EQ(queries::DistanceBetweenShapes(segment1, segment2).value(), 0);
 }
+
+TEST(QueriesTest, UnsupportedDistanceTest) {
+    Circle circle1{{10, 10}, 5};
+    Rectangle rectangle{{0, 0}, 5, 5};
+    EXPECT_FALSE(queries::DistanceBetweenShapes(circle1, rectangle).has_value());
+}

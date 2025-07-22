@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+string(APPEND CMAKE_CXX_FLAGS_DEBUG " -g -O0")
+string(APPEND CMAKE_CXX_FLAGS_RELEASE " -O3 -march=native")
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(-Wall -Werror -Wextra)
 endif()

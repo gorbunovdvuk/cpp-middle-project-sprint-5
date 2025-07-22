@@ -32,6 +32,8 @@ struct PointToShapeDistanceVisitor {
 };
 
 struct ShapeToShapeDistanceVisitor {
+    std::optional<double> operator()(const auto&, const auto&) const { return std::nullopt; }
+
     template <typename Shape>
     std::optional<double> operator()(const Point2D &point, const Shape &shape) const {
         return PointToShapeDistanceVisitor(point)(shape);

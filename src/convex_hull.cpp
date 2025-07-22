@@ -27,13 +27,13 @@ public:
 
     size_type size() const { return container_.size(); }
 
-    const Container &container() const { return container_; }
+    decltype(auto) container(this auto&& self) { return std::forward_like<decltype(self)>(self.container_); }
 
 private:
     Container container_;
 };
 
-GeometryResult<std::vector<Point2D>> GrahamScan(std::vector<Point2D> points) {
+GeometryResult<std::vector<Point2D>> GrahamScan(std::span<Point2D> points) {
     if (points.empty()) {
         return std::unexpected{GeometryError::InsufficientPoints};
     }
@@ -44,9 +44,10 @@ GeometryResult<std::vector<Point2D>> GrahamScan(std::vector<Point2D> points) {
         }
         return p1.x + 1e-10 < p2.x;
     });
-    points.erase(
-        std::ranges::unique(points, [](const Point2D &p1, const Point2D &p2) { return p1.Equals(p2); }).begin(),
-        points.end());
+
+    points = points.first(
+        std::ranges::unique(points, [](const Point2D &p1, const Point2D &p2) { return p1.Equals(p2); }).begin() - points.begin()
+    );
 
     const auto pt0 = points.front();
     std::ranges::sort(points.begin() + 1, points.end(), [&pt0](const Point2D &pt1, const Point2D &pt2) {
@@ -57,25 +58,20 @@ GeometryResult<std::vector<Point2D>> GrahamScan(std::vector<Point2D> points) {
         return cr > 0;
     });
 
-    std::vector filtered{std::from_range,
-                         ranges::views::adjacent_filter(points, [&pt0](const Point2D &pt1, const Point2D &pt2) {
-                             return std::abs((pt1 - pt0).CrossProduct(pt2 - pt0)) > 1e-10;
-                         })};
-
     StackForGrahamScan<Point2D> stack;
 
-    if (filtered.size() < 2) {
+    if (points.size() < 2) {
         return std::unexpected{GeometryError::DegenerateCase};
     }
 
-    stack.reserve(filtered.size());
-    stack.push(filtered[0]);
-    stack.push(filtered[1]);
-    for (size_t i = 2; i < filtered.size(); ++i) {
-        while (stack.size() >= 2 && (stack.top() - stack.pre_top()).CrossProduct(filtered[i] - stack.top()) < 1e-10) {
+    stack.reserve(points.size());
+    stack.push(points[0]);
+    stack.push(points[1]);
+    for (size_t i = 2; i < points.size(); ++i) {
+        while (stack.size() >= 2 && (stack.top() - stack.pre_top()).CrossProduct(points[i] - stack.top()) < 1e-10) {
             stack.pop();
         }
-        stack.push(filtered[i]);
+        stack.push(points[i]);
     }
 
     return stack.container();

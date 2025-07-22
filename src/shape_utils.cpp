@@ -3,6 +3,9 @@
 //
 
 #include "shape_utils.hpp"
+
+#include "combinations.hpp"
+
 #include <range/v3/all.hpp>
 
 namespace geometry::utils {
@@ -54,7 +57,7 @@ std::vector<Shape> ShapeGenerator::GenerateShapes(size_t count) {
 }
 
 std::vector<std::tuple<Shape, Shape>> FindAllCollisions(std::span<const Shape> shapes) {
-    return std::vector{std::from_range, ranges::views::cartesian_product(shapes, shapes) |
+    return std::vector{std::from_range, combinations::combinations(shapes) |
                                             ranges::views::filter([](const auto &shape_pair) {
                                                 const auto &[shape1, shape2] = shape_pair;
                                                 return Distinct(shape1, shape2) &&

@@ -9,11 +9,11 @@ namespace geometry::intersections {
 GeometryResult<std::vector<Point2D>> IntersectionVisitor::operator()(const LineSegment &segment1, const LineSegment &segment2) const {
     double a1 = (segment1.pt2 - segment1.pt1).NormalVector().x, b1 = (segment1.pt2 - segment1.pt1).NormalVector().y;
     double a2 = (segment2.pt2 - segment2.pt1).NormalVector().x, b2 = (segment2.pt2 - segment2.pt1).NormalVector().y;
-    double c1 = -(a1 * segment1.pt1.x + b1 * segment1.pt1.y), c2 = -(a2 * segment2.pt1.x + b2 * segment2.pt1.y);
     double det = a1 * b2 - a2 * b1;
     if (std::abs(det) < 1e-10) {
         return std::unexpected{GeometryError::DegenerateCase};
     }
+    double c1 = -(a1 * segment1.pt1.x + b1 * segment1.pt1.y), c2 = -(a2 * segment2.pt1.x + b2 * segment2.pt1.y);
     double dx = -(c1 * b2 - c2 * b1), dy = -(a1 * c2 - a2 * c1);
     Point2D intersection{dx / det, dy / det};
     if (segment1.Contains(intersection) && segment2.Contains(intersection)) {
