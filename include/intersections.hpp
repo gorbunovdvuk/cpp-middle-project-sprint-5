@@ -1,25 +1,24 @@
 #pragma once
 #include "geometry.hpp"
-#include <cmath>
 #include <optional>
 
 namespace geometry::intersections {
 
-/*
- * Класс для поиска пересечений между двумя фигурами
- *
- * Требуется организовать возможность нахождения пересечений только для следующих комбинаций фигур:
- *    - Line   & Line
- *    - Line   & Circle
- *    - Circle & Circle
- *
- * Для всех остальных требуется выбросить исключение std::logic_error
- */
 class IntersectionVisitor {
 public:
-    /* ваш код здесь */
+    GeometryResult<std::vector<Point2D>> operator()(const LineSegment &segment1, const LineSegment &segment2) const;
+
+    GeometryResult<std::vector<Point2D>> operator()(const LineSegment &segment, const Circle &circle) const;
+
+    GeometryResult<std::vector<Point2D>> operator()(const Circle &circle, const LineSegment &segment) const {
+        return this->operator()(segment, circle);
+    }
+
+    GeometryResult<std::vector<Point2D>> operator()(const Circle &circle1, const Circle &circle2) const;
+
+    GeometryResult<std::vector<Point2D>> operator()(const auto &, const auto &) const { throw std::logic_error("Unsupported intersection"); }
 };
 
-inline std::optional<Point2D> GetIntersectPoint(const Shape &shape1, const Shape &shape2) { return std::nullopt; }
+GeometryResult<std::vector<Point2D>> GetIntersectionPoints(const Shape &shape1, const Shape &shape2);
 
 }  // namespace geometry::intersections
