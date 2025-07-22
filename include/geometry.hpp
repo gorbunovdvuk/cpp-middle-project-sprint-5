@@ -263,7 +263,7 @@ public:
         double area = 0;
         for (size_t i = 0; i < vertices_.size(); ++i) {
             size_t next = i + 1 == vertices_.size() ? 0 : i + 1;
-            area += (vertices_[i] - vertices_.front()).CrossProduct(vertices_[next] - vertices_.front()) / 2;
+            area += (vertices_[i] - vertices_.front()).CrossProduct(vertices_[next] - vertices_.front());
         }
         return std::abs(area) / 2;
     }
