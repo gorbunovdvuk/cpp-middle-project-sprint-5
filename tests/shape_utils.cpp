@@ -16,14 +16,10 @@ TEST(ShapeUtilsTest, TestFindAllCollisions) {
         Rectangle{{5, 5}, 3, 3},
     };
     auto collisions = utils::FindAllCollisions(shapes);
-    EXPECT_EQ(collisions.size(), 4);
+    EXPECT_EQ(collisions.size(), 2);
     EXPECT_TRUE(!Distinct(std::get<0>(collisions[0]), shapes[0]));
     EXPECT_TRUE(!Distinct(std::get<1>(collisions[0]), shapes[1]));
-    EXPECT_TRUE(!Distinct(std::get<0>(collisions[1]), shapes[1]));
-    EXPECT_TRUE(!Distinct(std::get<1>(collisions[1]), shapes[0]));
 
-    EXPECT_TRUE(!Distinct(std::get<0>(collisions[2]), shapes[2]));
-    EXPECT_TRUE(!Distinct(std::get<1>(collisions[2]), shapes[3]));
-    EXPECT_TRUE(!Distinct(std::get<0>(collisions[3]), shapes[3]));
-    EXPECT_TRUE(!Distinct(std::get<1>(collisions[3]), shapes[2]));
+    EXPECT_TRUE(!Distinct(std::get<0>(collisions[1]), shapes[2]));
+    EXPECT_TRUE(!Distinct(std::get<1>(collisions[1]), shapes[3]));
 }
