@@ -13,8 +13,7 @@ template<std::ranges::range R, size_t N>
 requires (std::ranges::sized_range<R> && N > 0)
 class combinations_view : public ranges::view_interface<combinations_view<R, N>> {
 public:
-    using range_element_type = std::ranges::range_reference_t<R>;
-    using value_type = traits::repeated_tuple_t<range_element_type, N>;
+    using value_type = traits::repeated_tuple_t<std::ranges::range_reference_t<R>, N>;
 
     template<typename base_type = boost::stl_interfaces::proxy_iterator_interface<std::forward_iterator_tag, value_type>>
     class iterator : public base_type {
